@@ -1,0 +1,26 @@
+---
+- hosts: clients
+  remote_user: root
+  tasks:
+
+  - name: install net-tools
+    yum: name=net-tools state=present
+
+  - name: install epel
+    yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+
+  - name: install latest packages
+    yum: name=* state=latest
+    notify:
+      - Reboot system
+      - Wait for reboot
+
+  handlers:
+  - name: Reboot system
+    raw: /sbin/shutdown -r "{{ '1' if osid == 'centos7' else 'now' }}"
+    changed_when: True
+
+  - name: Wait for reboot
+    wait_for: host={{ ansible_default_ipv4.address }} port=22 timeout={{ 5 * 60 }} delay=90 state=started
+    delegate_to: 127.0.0.1
+

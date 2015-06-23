@@ -1,0 +1,10 @@
+---
+- hosts: controllers
+ - tasks:
+   - name: install RDO kilo repo
+     yum: name=https://repos.fedorapeople.org/repos/openstack/openstack-kilo/rdo-release-kilo-1.noarch.rpm state=present
+   
+   - name: install dependencies
+     yum: name=openstack-tempest,gcc,libxml2-devel,libxslt-devel,python-devel,openssl-devel,python-testtools,libffi-devel,libffi state=present
+
+   
